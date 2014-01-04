@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block style %}{{url_for('.static', filename='style.css')}}{% endblock %}
+{% block title %}Feedloggr{% endblock %}
+
+{% block content %}
+<header>
+    <a href="{{ url_for(".index")}}{{next_day}}">&lt;&lt;</a>
+    <a href="{{ url_for(".index") }}">{{date}}</a>
+    <a href="{{ url_for(".index")}}{{prev_day}}">&gt;&gt;</a>
+</header>
+
+{% if news %}
+{% for group in news %}
+<h1>{{group['title']}}</h1>
+    <ol>{% for item in group['items'] %}
+        <li><a href="{{item.link}}" rel="nofollow">{{item.title or item.link}}</a></li>
+    {% endfor %}</ol>
+{% endfor %}
+{% else %}
+<p>Sorry, no links today!</p>
+{% endif %}
+
+<footer>
+Generated with <a href="https://github.com/lmas/Feedloggr">Feedloggr</a>
+</footer>
+{% endblock %}
+
