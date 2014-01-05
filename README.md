@@ -2,7 +2,7 @@
 Feedloggr
 =========
 Genrate news from RSS/Atom feeds for your flask applications.
-This is the bigger brother of simple_feedlog (https://github.com/lmas/simple_feedlog).
+This is the bigger brother of [simple_feedlog](https://github.com/lmas/simple_feedlog).
 
 Installation
 ------------
@@ -64,7 +64,7 @@ Feedloggr.
 Contribution
 ------------
 Any and all contributions are welcome! Only requirement is that you make sure to
-(at least loosely) follow PEP8 (http://www.python.org/dev/peps/pep-0008/) when
+(at least loosely) follow [PEP8](http://www.python.org/dev/peps/pep-0008/) when
 editing the code.
 
 Credits
