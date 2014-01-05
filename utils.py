@@ -1,6 +1,7 @@
 
 import datetime
 import feedparser
+import sys
 
 from flask import current_app
 from .models import *
@@ -18,6 +19,35 @@ def reset():
     Feed.create_table(fail_silently=True)
     Entry.create_table(fail_silently=True)
     print('All tables cleared.')
+
+@manager.command
+def list():
+    """Show a list of all stored feeds."""
+    for feed in Feed.select():#.order_by(Feed.title.desc()):
+        print('#%i. %s (%s)' % (feed.id, feed.title, feed.link))
+
+@manager.command
+def add(link, title=''):
+    """Add a new feed with a URL and optionally a title."""
+    if not link.startswith('http://'):
+        link = 'http://%s' % link
+    try:
+        Feed.create(title=title or link, link=link)
+    except Exception as e:
+        print('Error while adding new feed: %s' % e)
+        sys.exit(1)
+    print('New feed has been stored.')
+
+@manager.command
+def remove(idno):
+    """Remove a feed, using it's ID number."""
+    try:
+        feed = Feed.get(Feed.id == idno)
+    except Exception as e:
+        print('Error while removing feed: %s' % e)
+        sys.exit(1)
+    print('Now removing feed #%i . %s (%s)' % (feed.id, feed.title, feed.link))
+    feed.delete_instance()
 
 @manager.command
 def update():
@@ -41,4 +71,4 @@ def update():
                         feed = feed,
                     )
                     stored += 1
-        print('Updating %s with %i new items, out of %i (%i%%).' % (feed.title, stored, items, (float(stored)/items) * 100))
+        print('Updating %s with %i new items.' % (feed.title, stored))
