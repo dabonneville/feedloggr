@@ -1,3 +1,3 @@
 
-from .views import feedloggr
+from .views import blueprint
 
