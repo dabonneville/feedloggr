@@ -61,6 +61,12 @@ Example
 Inside the directory `example/` is a simple app which shows you how you can run
 Feedloggr.
 
+Contribution
+------------
+Any and all contributions are welcome! Only requirement is that you make sure to
+(at least loosely) follow PEP8 (http://www.python.org/dev/peps/pep-0008/) when
+editing the code.
+
 Credits
 -------
 See AUTHORS for a complete list.
