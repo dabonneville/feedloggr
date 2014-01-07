@@ -10,15 +10,20 @@ from flask.ext.script import Manager
 manager = Manager(usage="Perform database operations")
 
 @manager.command
-def reset():
-    """Reset all tables."""
+def drop():
+    """Drop all tables."""
     Date.drop_table(fail_silently=True)
     Feed.drop_table(fail_silently=True)
     Entry.drop_table(fail_silently=True)
+    print('All tables dropped.')
+
+@manager.command
+def create():
+    """Create all tables."""
     Date.create_table(fail_silently=True)
     Feed.create_table(fail_silently=True)
     Entry.create_table(fail_silently=True)
-    print('All tables cleared.')
+    print('All tables created.')
 
 @manager.command
 def list():
