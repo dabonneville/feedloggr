@@ -1,7 +1,7 @@
 
 body{
-    background-color: #000;
-    color: #AAA;
+    background-color: #FFF;
+    color: #444;
     font-family: monospace;
 }
 header{
@@ -10,11 +10,14 @@ header{
 header a{
     display: inline-block;
     text-decoration: none;
-    color: #000;
     background-color: #AAA;
+    color: #000;
     border-radius: 2px;
     width: 100px;
     padding: 2px;
+}
+header a:visited{
+    color: #000;
 }
 header a:hover{
     text-decoration: none;
@@ -29,13 +32,13 @@ li{
 }
 a{
     text-decoration:none;
-    color: #AAA;
+    color: #444;
 }
 a:hover{
-    color: #FFF;
+    color: #000;
 }
 a:visited{
-    color: #555;
+    color: #AAA;
 }
 h1{
     text-align: center;
