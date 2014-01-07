@@ -1,6 +1,5 @@
 
 import datetime
-import feedparser
 
 from flask import Blueprint, render_template
 
