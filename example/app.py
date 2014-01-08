@@ -1,4 +1,3 @@
-
 from flask import Flask
 
 ######################################################################
@@ -15,7 +14,7 @@ def create_app():
     app.config['FEEDLOGGR_MAX_ITEMS'] = 50
 
     #db.init(app)
-    # HACK: yep, flask-peewee would have done this for us by now..
+    # HACK: yep, flask-peewee could have done this for us by now..
     db.init('example.db')
     from flask import g
     @app.before_request
