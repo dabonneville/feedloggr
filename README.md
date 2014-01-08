@@ -1,7 +1,6 @@
-
 Feedloggr
 =========
-Genrate news from RSS/Atom feeds for your flask applications.
+Collect news from your favorite RSS/Atom feeds and show them in your flask application.
 This is the bigger brother of [simple_feedlog](https://github.com/lmas/simple_feedlog).
 
 Installation
@@ -14,7 +13,7 @@ Copy the Feedloggr blueprint into your flask app directory:
 
     cp -r feedloggr/ /path/to/flask/app
 
-Import and register blueprint in your app:
+Import and register the blueprint in your app:
 
     from feedloggr import blueprint
     app.register_blueprint(blueprint, url_prefix='/feedloggr')
@@ -43,10 +42,10 @@ each time it's updating it's feeds.
 Restart your app and you should now be running Feedloggr! You can now visit it
 at `http://your.flask.site/feedloggr`.
 
-Usage
------
+Management
+----------
 The only way to manage Feedloggr is for now via flask-script.
-Aviable commands are:
+Available commands are:
 
     list - Show a list of all stored feeds.
     add <link> [-t title] - Add a new feed with a URL and optionally a title.
@@ -54,7 +53,7 @@ Aviable commands are:
     update - Update all feeds stored in the database.
 
 You should run the update command daily, so Feedloggr can download new items
-and show them for you. This is best done with `cron` on a Linux host. See `man cron`.
+and show them for you. On a linux host, this is easily done with `cron`.
 
 Example
 -------
