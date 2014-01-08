@@ -31,6 +31,6 @@ def create_app():
     from feedloggr import blueprint
     app.register_blueprint(blueprint)#, url_prefix='/news')
     # make sure all tables exists
-    from feedloggr.utils import create
-    create()
+    from feedloggr.utils import create_tables
+    create_tables()
     return app

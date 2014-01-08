@@ -1,29 +1,58 @@
 
-import datetime
-import feedparser
 import sys
 
-from flask import current_app
 from .models import *
+
+######################################################################
+
+def create_tables(fail_silently=True):
+    Date.create_table(fail_silently=fail_silently)
+    Feed.create_table(fail_silently=fail_silently)
+    Entry.create_table(fail_silently=fail_silently)
+
+def drop_tables(fail_silently=True):
+    Date.drop_table(fail_silently=fail_silently)
+    Feed.drop_table(fail_silently=fail_silently)
+    Entry.drop_table(fail_silently=fail_silently)
+
+def update_feeds():
+    import datetime, feedparser
+    from flask import current_app
+    from peewee import IntegrityError as pie
+    date = Date.get_or_create(date=datetime.date.today()) # TODO
+    new_items = 0
+    for feed in Feed.select():
+        data = feedparser.parse(feed.link)
+        max_items = current_app.config['FEEDLOGGR_MAX_ITEMS'] or 25
+        items = min(max_items, len(data.entries))
+        with db.transaction(): # avoids comitting after each new item
+            for i in xrange(items):
+                item = data.entries[i]
+                try:
+                    entry = Entry.create(
+                        title = item['title'] or item['link'],
+                        link = item['link'],
+                        date = date,
+                        feed = feed,
+                    )
+                except pie:
+                    # TODO: peewee is complaining via a log handler
+                    pass
+                else:
+                    new_items += 1
+    return new_items
+
+######################################################################
 
 from flask.ext.script import Manager
 manager = Manager(usage="Perform database operations")
 
 @manager.command
-def drop():
-    """Drop all tables."""
-    Date.drop_table(fail_silently=True)
-    Feed.drop_table(fail_silently=True)
-    Entry.drop_table(fail_silently=True)
-    print('All tables dropped.')
-
-@manager.command
-def create():
-    """Create all tables."""
-    Date.create_table(fail_silently=True)
-    Feed.create_table(fail_silently=True)
-    Entry.create_table(fail_silently=True)
-    print('All tables created.')
+def reset():
+    """Reset all tables, by dropping and recreating them."""
+    drop_tables()
+    create_tables()
+    print('All tables reset.')
 
 @manager.command
 def list():
@@ -57,23 +86,6 @@ def remove(idno):
 @manager.command
 def update():
     """Update all feeds stored in the database."""
-    date = Date.get_or_create(date=datetime.date.today()) # TODO
-    for feed in Feed.select():
-        data = feedparser.parse(feed.link)
-        items = min(current_app.config['FEEDLOGGR_MAX_ITEMS'], len(data.entries))
+    new_items = update_feeds()
+    print('Database was updated with %i new items.' % new_items)
 
-        stored = 0
-        with db.transaction():
-            for i in xrange(items):
-                item = data.entries[i]
-                try:
-                    entry = Entry.get(link=item['link'])
-                except DoesNotExist:
-                    entry = Entry.create(
-                        title = item['title'] or item['link'],
-                        link = item['link'],
-                        date = date,
-                        feed = feed,
-                    )
-                    stored += 1
-        print('Updating %s with %i new items.' % (feed.title, stored))
