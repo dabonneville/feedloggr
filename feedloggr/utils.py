@@ -1,4 +1,6 @@
 
+import datetime
+
 from .models import *
 
 ######################################################################
@@ -13,8 +15,22 @@ def drop_tables(fail_silently=True):
     Feed.drop_table(fail_silently=fail_silently)
     Entry.drop_table(fail_silently=fail_silently)
 
+def get_news(current_date = datetime.date.today()):
+    news = []
+    date = Date.get_or_create(date = current_date) # TODO
+    if not date:
+        return news
+    for feed in Feed.select().order_by(Feed.title.desc()):
+        items = Entry.select().where(
+            Entry.feed == feed,
+            Entry.date == date
+        )
+        if items.count() > 0:
+            news.append((feed, items))
+    return news
+
 def update_feeds():
-    import datetime, feedparser
+    import feedparser
     from flask import current_app
     from peewee import IntegrityError as pie
     date = Date.get_or_create(date=datetime.date.today()) # TODO

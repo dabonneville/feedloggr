@@ -4,6 +4,7 @@ import datetime
 from flask import Blueprint, render_template
 
 from .models import *
+from .utils import get_news
 
 ######################################################################
 
@@ -22,29 +23,13 @@ def index(year=None, month=None, day=None):
         date = datetime.date(year, month, day)
     except (ValueError, TypeError):
         date = datetime.date.today()
-
-    news = []
-    date = Date.get_or_create(date = date) # TODO: deprecated func
-    if date:
-        for feed in Feed.select().order_by(Feed.title.desc()):
-            items = Entry.select().where(
-                Entry.feed == feed,
-                Entry.date == date
-            )
-
-            if items.count() > 0:
-                news.append({
-                    'title': feed.title,
-                    'link': feed.link,
-                    'items': items,
-                })
-
+    news = get_news(date)
     delta = datetime.timedelta(days=1)
     context = {
         'news': news,
-        'date': str(date.date),
-        'next_day': str(date.date + delta),
-        'prev_day': str(date.date - delta),
+        'today': date,
+        'next_day': str(date + delta),
+        'prev_day': str(date - delta),
     }
     return render_template('index.html', **context)
 
