@@ -1,6 +1,4 @@
 
-import sys
-
 from .models import *
 
 ######################################################################
@@ -69,19 +67,19 @@ def add(link, title=''):
         Feed.create(title=title or link, link=link)
     except Exception as e:
         print('Error while adding new feed: %s' % e)
-        sys.exit(1)
-    print('New feed has been stored.')
+    else:
+        print('New feed has been stored.')
 
 @manager.command
 def remove(idno):
     """Remove a feed, using it's ID number."""
     try:
         feed = Feed.get(Feed.id == idno)
+        feed.delete_instance()
     except Exception as e:
         print('Error while removing feed: %s' % e)
-        sys.exit(1)
-    print('Now removing feed #%i . %s (%s)' % (feed.id, feed.title, feed.link))
-    feed.delete_instance()
+    else:
+        print('Removed feed #%i %s (%s)' % (feed.id, feed.title, feed.link))
 
 @manager.command
 def update():
