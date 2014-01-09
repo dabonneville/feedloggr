@@ -11,6 +11,8 @@ app.config.update(
         'name': 'example.db',
         'engine': 'peewee.SqliteDatabase',
     },
+    ADMINUSER = 'admin',
+    ADMINPASSWORD = 'admin',
     FEEDLOGGR_MAX_ITEMS = 50,
 )
 
