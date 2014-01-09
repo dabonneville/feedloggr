@@ -1,35 +1,25 @@
 from flask import Flask
+from flask_peewee.db import Database
 
 ######################################################################
 
-#from flask_peewee.db import Database
-#db = Database(None)
-# HACK: flask-peewee can't do this, use "raw peewee" for now
-from flask_peewee.db import SqliteDatabase
-db = SqliteDatabase(None)
-# END HACK
+app = Flask(__name__)
+app.config.update(
+    DEBUG = True,
+    SECRET_KEY = 'supersecret',
+    DATABASE = {
+        'name': 'example.db',
+        'engine': 'peewee.SqliteDatabase',
+    },
+    FEEDLOGGR_MAX_ITEMS = 50,
+)
 
-def create_app():
-    app = Flask(__name__)
-    app.config['FEEDLOGGR_MAX_ITEMS'] = 50
+db = Database(app)
 
-    #db.init(app)
-    # HACK: yep, flask-peewee could have done this for us by now..
-    db.init('example.db')
-    from flask import g
-    @app.before_request
-    def before_request():
-        g.db = db
-        g.db.connect()
-    @app.after_request
-    def after_request(response):
-        g.db.close()
-        return response
-    # END HACK
+from feedloggr import blueprint
+app.register_blueprint(blueprint)#, url_prefix='/news')
 
-    from feedloggr import blueprint
-    app.register_blueprint(blueprint)#, url_prefix='/news')
-    # make sure all tables exists
-    from feedloggr.utils import create_tables
-    create_tables()
-    return app
+# make sure all tables exists
+from feedloggr.utils import create_tables
+create_tables()
+

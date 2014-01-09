@@ -5,18 +5,14 @@ from app import db
 
 ######################################################################
 
-class BaseModel(Model):
-    class Meta:
-        database = db
-
-class Date(BaseModel):
+class Date(db.Model):
     date = DateField(null=False, unique=True)
 
-class Feed(BaseModel):
+class Feed(db.Model):
     title = CharField(null=False)
     link = CharField(null=False, unique=True)
 
-class Entry(BaseModel):
+class Entry(db.Model):
     title = CharField(null=False)
     link = CharField(null=False, unique=True)
     date = ForeignKeyField(Date)

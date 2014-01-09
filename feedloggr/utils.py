@@ -39,7 +39,7 @@ def update_feeds():
         data = feedparser.parse(feed.link)
         max_items = current_app.config['FEEDLOGGR_MAX_ITEMS'] or 25
         items = min(max_items, len(data.entries))
-        with db.transaction(): # avoids comitting after each new item
+        with db.database.transaction(): # avoids comitting after each new item
             for i in xrange(items):
                 item = data.entries[i]
                 try:
