@@ -36,7 +36,10 @@ def update_feeds():
     date = Date.get_or_create(date=datetime.date.today()) # TODO
     new_items = 0
     for feed in Feed.select():
-        data = feedparser.parse(feed.link)
+        link = feed.link
+        if not link.startswith('http://'):
+            link = 'http://%s' % link
+        data = feedparser.parse(link)
         max_items = current_app.config['FEEDLOGGR_MAX_ITEMS'] or 25
         items = min(max_items, len(data.entries))
         with db.database.transaction(): # avoids comitting after each new item
@@ -77,8 +80,6 @@ def list():
 @manager.command
 def add(link, title=''):
     """Add a new feed with a URL and optionally a title."""
-    if not link.startswith('http://'):
-        link = 'http://%s' % link
     try:
         Feed.create(title=title or link, link=link)
     except Exception as e:
