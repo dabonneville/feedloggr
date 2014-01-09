@@ -16,6 +16,9 @@ app.config.update(
 
 db = Database(app)
 
+from auth import setup_auth
+auth = setup_auth(app, db)
+
 from feedloggr import blueprint
 app.register_blueprint(blueprint)#, url_prefix='/news')
 
@@ -23,3 +26,5 @@ app.register_blueprint(blueprint)#, url_prefix='/news')
 from feedloggr.utils import create_tables
 create_tables()
 
+from admin import setup_admin
+admin = setup_admin(app, auth)
