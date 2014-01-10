@@ -16,7 +16,7 @@ app.config.update(
 
 db = Database(app)
 
-from feedloggr import blueprint
+from blueprint import blueprint
 app.register_blueprint(blueprint)#, url_prefix='/news')
 
 from auth import init_auth
@@ -32,7 +32,7 @@ def setup_db():
     from getpass import getpass
     from peewee import IntegrityError as pie
     from peewee import OperationalError as poe
-    from feedloggr.utils import create_tables
+    from blueprint.utils import create_tables
 
     print('Creating database tables.')
     try:

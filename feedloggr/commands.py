@@ -3,7 +3,7 @@ from flask.ext.script import Manager
 
 from app import app
 
-from feedloggr.models import Feed
+from blueprint.models import Feed
 
 manager = Manager(app)
 
@@ -16,7 +16,7 @@ def setup():
 @manager.command
 def drop():
     """Drop all database tables used by feedloggr."""
-    from feedloggr.utils import drop_tables
+    from blueprint.utils import drop_tables
     drop_tables()
     app.auth.User.drop_table(fail_silently=True)
     print('All tables dropped.')
@@ -57,7 +57,7 @@ def remove(idno):
 @manager.command
 def update():
     """Update all feeds stored in the database."""
-    from feedloggr.utils import update_feeds
+    from blueprint.utils import update_feeds
     new_items = update_feeds()
     print('Database was updated with %i new items.' % new_items)
 

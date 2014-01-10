@@ -1,7 +1,7 @@
 
 from flask_peewee.admin import Admin, ModelAdmin
 
-from feedloggr.models import Feed
+from blueprint.models import Feed
 
 class FeedAdmin(ModelAdmin):
     """Show pretty admin interface for feeds."""
