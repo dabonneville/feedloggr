@@ -25,6 +25,8 @@ app.auth = init_auth(app, db)
 from admin import init_admin
 app.admin = init_admin(app, app.auth)
 
+######################################################################
+
 def setup_db():
     """Create tables and admin user."""
     from getpass import getpass
