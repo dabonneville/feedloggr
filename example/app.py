@@ -18,15 +18,31 @@ app.config.update(
 
 db = Database(app)
 
-from auth import setup_auth
-auth = setup_auth(app, db)
+from auth import init_auth
+auth = init_auth(app, db)
+
+from admin import init_admin
+admin = init_admin(app, auth)
 
 from feedloggr import blueprint
 app.register_blueprint(blueprint)#, url_prefix='/news')
 
-# make sure all tables exists
-from feedloggr.utils import create_tables
-create_tables()
+def setup():
+    from feedloggr.utils import create_tables
+    create_tables()
 
-from admin import setup_admin
-admin = setup_admin(app, auth)
+    from peewee import IntegrityError as pie
+    auth.User.create_table(fail_silently=True)
+    try:
+        admin = auth.User.create(
+            username=app.config['ADMINUSER'],
+            admin=True,
+            active=True,
+            password = '',
+            email='',
+        )
+        admin.set_password(app.config['ADMINPASSWORD'])
+        admin.save()
+    except pie as e:
+        pass
+
