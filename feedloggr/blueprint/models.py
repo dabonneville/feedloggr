@@ -1,9 +1,14 @@
 
 from peewee import DateField, CharField, ForeignKeyField
+from flask_peewee.admin import ModelAdmin
 
 from app import db
 
 ######################################################################
+
+class FeedAdmin(ModelAdmin):
+    """Show pretty admin interface for feeds."""
+    columns = ('title', 'link')
 
 class Date(db.Model):
     """Stores dates as datetime.date objects."""

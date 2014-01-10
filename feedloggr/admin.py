@@ -1,11 +1,7 @@
 
-from flask_peewee.admin import Admin, ModelAdmin
+from flask_peewee.admin import Admin
 
-from blueprint.models import Feed
-
-class FeedAdmin(ModelAdmin):
-    """Show pretty admin interface for feeds."""
-    columns = ('title', 'link')
+from blueprint.models import Feed, FeedAdmin
 
 def init_admin(app, auth):
     """Setup the admin app."""
