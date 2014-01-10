@@ -3,7 +3,7 @@ from flask.ext.script import Manager
 
 from app import app
 
-from feedloggr.models import Date, Feed, Entry
+from feedloggr.models import Feed
 
 manager = Manager(app)
 
@@ -14,7 +14,7 @@ def setup():
     setup_db()
 
 @manager.command
-def drop_tables():
+def drop():
     """Drop all database tables used by feedloggr."""
     from feedloggr.utils import drop_tables
     drop_tables()
