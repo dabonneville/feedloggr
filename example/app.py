@@ -17,15 +17,15 @@ app.config.update(
 db = Database(app)
 
 from auth import init_auth
-auth = init_auth(app, db)
+app.auth = init_auth(app, db)
 
 from admin import init_admin
-admin = init_admin(app, auth)
+app.admin = init_admin(app, app.auth)
 
 from feedloggr import blueprint
 app.register_blueprint(blueprint)#, url_prefix='/news')
 
-def setup():
+def setup_db():
     """Create tables and admin user."""
     from getpass import getpass
     from peewee import IntegrityError as pie
@@ -35,25 +35,25 @@ def setup():
     print('Creating database tables.')
     try:
         create_tables(fail_silently = False)
-        auth.User.create_table(fail_silently = False)
-    except poe as e:
-        print('Error while creating tables: %s' % e)
+        app.auth.User.create_table(fail_silently = False)
+    except poe as error:
+        print('Error while creating tables: %s' % error)
         return
 
     print('Creating admin user.')
     admin_name = raw_input('Username: ')
     admin_password = getpass()
     try:
-        admin = auth.User.create(
+        admin_user = app.auth.User.create(
             username = admin_name,
             admin=True,
             active=True,
             password = '',
             email='',
         )
-        admin.set_password(admin_password)
-        admin.save()
-    except pie as e:
-        print('Error while creating admin user: %s' % e)
+        admin_user.set_password(admin_password)
+        admin_user.save()
+    except pie as error:
+        print('Error while creating admin user: %s' % error)
         return
 

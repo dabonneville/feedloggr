@@ -11,8 +11,8 @@ manager.add_command('feedloggr', feedloggr_manager)
 @manager.command
 def setup():
     """Initiate databases."""
-    from app import setup
-    setup()
+    from app import setup_db
+    setup_db()
 
 @manager.command
 def routes():
