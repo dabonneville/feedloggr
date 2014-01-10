@@ -16,14 +16,14 @@ app.config.update(
 
 db = Database(app)
 
+from feedloggr import blueprint
+app.register_blueprint(blueprint)#, url_prefix='/news')
+
 from auth import init_auth
 app.auth = init_auth(app, db)
 
 from admin import init_admin
 app.admin = init_admin(app, app.auth)
-
-from feedloggr import blueprint
-app.register_blueprint(blueprint)#, url_prefix='/news')
 
 def setup_db():
     """Create tables and admin user."""
