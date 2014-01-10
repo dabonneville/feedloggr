@@ -3,7 +3,7 @@ import datetime
 
 from flask import Blueprint, render_template
 
-from .models import *
+from .models import Date, Feed, Entry
 from .utils import get_news
 
 ######################################################################
@@ -19,6 +19,7 @@ blueprint = Blueprint(
 @blueprint.route('/')
 @blueprint.route('/<int:year>-<int:month>-<int:day>')
 def index(year=None, month=None, day=None):
+    """News index, show news for selected date (unspecified or yyyy-mm-dd)."""
     try:
         date = datetime.date(year, month, day)
     except (ValueError, TypeError):

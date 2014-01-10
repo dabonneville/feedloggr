@@ -1,21 +1,24 @@
 
 import datetime
 
-from .models import *
+from .models import Date, Feed, Entry, db
 
 ######################################################################
 
 def create_tables(fail_silently=True):
+    """Create database tables used by feedloggr."""
     Date.create_table(fail_silently=fail_silently)
     Feed.create_table(fail_silently=fail_silently)
     Entry.create_table(fail_silently=fail_silently)
 
 def drop_tables(fail_silently=True):
+    """Drop database tables used by feedloggr."""
     Date.drop_table(fail_silently=fail_silently)
     Feed.drop_table(fail_silently=fail_silently)
     Entry.drop_table(fail_silently=fail_silently)
 
 def get_news(current_date = datetime.date.today()):
+    """Grab stored news for specified date."""
     news = []
     date = Date.get_or_create(date = current_date) # TODO
     if not date:
@@ -30,6 +33,7 @@ def get_news(current_date = datetime.date.today()):
     return news
 
 def update_feeds():
+    """Update database with new items from the feeds."""
     import feedparser
     from flask import current_app
     from peewee import IntegrityError as pie
@@ -46,7 +50,7 @@ def update_feeds():
             for i in xrange(items):
                 item = data.entries[i]
                 try:
-                    entry = Entry.create(
+                    Entry.create(
                         title = item['title'] or item['link'],
                         link = item['link'],
                         date = date,
@@ -72,7 +76,7 @@ def reset():
     print('All tables reset.')
 
 @manager.command
-def list():
+def feeds():
     """Show a list of all stored feeds."""
     for feed in Feed.select():#.order_by(Feed.title.desc()):
         print('#%i. %s (%s)' % (feed.id, feed.title, feed.link))
@@ -80,10 +84,11 @@ def list():
 @manager.command
 def add(link, title=''):
     """Add a new feed with a URL and optionally a title."""
+    from peewee import IntegrityError as pie
     try:
         Feed.create(title=title or link, link=link)
-    except Exception as e:
-        print('Error while adding new feed: %s' % e)
+    except pie as error:
+        print('Error while adding new feed: %s' % error)
     else:
         print('New feed has been stored.')
 
@@ -93,8 +98,8 @@ def remove(idno):
     try:
         feed = Feed.get(Feed.id == idno)
         feed.delete_instance()
-    except Exception as e:
-        print('Error while removing feed: %s' % e)
+    except Exception as error:
+        print('Error while removing feed: %s' % error)
     else:
         print('Removed feed #%i %s (%s)' % (feed.id, feed.title, feed.link))
 
