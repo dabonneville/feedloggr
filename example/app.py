@@ -11,8 +11,6 @@ app.config.update(
         'name': 'example.db',
         'engine': 'peewee.SqliteDatabase',
     },
-    ADMINUSER = 'admin',
-    ADMINPASSWORD = 'admin',
     FEEDLOGGR_MAX_ITEMS = 50,
 )
 
@@ -28,21 +26,34 @@ from feedloggr import blueprint
 app.register_blueprint(blueprint)#, url_prefix='/news')
 
 def setup():
-    from feedloggr.utils import create_tables
-    create_tables()
-
+    """Create tables and admin user."""
+    from getpass import getpass
     from peewee import IntegrityError as pie
-    auth.User.create_table(fail_silently=True)
+    from peewee import OperationalError as poe
+    from feedloggr.utils import create_tables
+
+    print('Creating database tables.')
+    try:
+        create_tables(fail_silently = False)
+        auth.User.create_table(fail_silently = False)
+    except poe as e:
+        print('Error while creating tables: %s' % e)
+        return
+
+    print('Creating admin user.')
+    admin_name = raw_input('Username: ')
+    admin_password = getpass()
     try:
         admin = auth.User.create(
-            username=app.config['ADMINUSER'],
+            username = admin_name,
             admin=True,
             active=True,
             password = '',
             email='',
         )
-        admin.set_password(app.config['ADMINPASSWORD'])
+        admin.set_password(admin_password)
         admin.save()
     except pie as e:
-        pass
+        print('Error while creating admin user: %s' % e)
+        return
 
