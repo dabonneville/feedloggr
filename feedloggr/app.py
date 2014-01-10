@@ -58,4 +58,5 @@ def setup_db():
     except pie as error:
         print('Error while creating admin user: %s' % error)
         return
+    print('Database was successfully created.')
 
