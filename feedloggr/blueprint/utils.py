@@ -26,8 +26,6 @@ def get_news(current_date = datetime.date.today()):
     try:
         date = Date.get(Date.date == current_date)
     except pdne:
-        date = Date.create(date = current_date)
-    if not date:
         return news
     for feed in Feed.select().order_by(Feed.title.desc()):
         items = Entry.select().where(
