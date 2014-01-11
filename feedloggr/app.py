@@ -8,16 +8,9 @@ import logging
 logger = logging.getLogger('peewee')
 logger.setLevel(logging.CRITICAL)
 
-app = Flask(__name__)
-app.config.update(
-    DEBUG = True,
-    SECRET_KEY = 'supersecret',
-    DATABASE = {
-        'name': 'example.db',
-        'engine': 'peewee.SqliteDatabase',
-    },
-    FEEDLOGGR_MAX_ITEMS = 50,
-)
+app = Flask(__name__, instance_relative_config=True)
+app.config.from_object('config')
+app.config.from_pyfile('config.py', silent=True)
 
 db = Database(app)
 
