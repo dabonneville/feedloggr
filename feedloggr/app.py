@@ -3,6 +3,11 @@ from flask_peewee.db import Database
 
 ######################################################################
 
+# Silence all but the most critical errors from peewee, no more spamming
+import logging
+logger = logging.getLogger('peewee')
+logger.setLevel(logging.CRITICAL)
+
 app = Flask(__name__)
 app.config.update(
     DEBUG = True,
@@ -13,10 +18,6 @@ app.config.update(
     },
     FEEDLOGGR_MAX_ITEMS = 50,
 )
-
-# Silence all but the most critical errors, no more spamming
-import logging
-logging.basicConfig(level=logging.CRITICAL)
 
 db = Database(app)
 
