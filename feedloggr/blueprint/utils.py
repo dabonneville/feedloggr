@@ -57,7 +57,6 @@ def update_feeds():
                         feed = feed,
                     )
                 except pie:
-                    # TODO: peewee is complaining via a log handler
                     pass
                 else:
                     new_items += 1

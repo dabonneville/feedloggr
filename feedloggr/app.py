@@ -14,6 +14,10 @@ app.config.update(
     FEEDLOGGR_MAX_ITEMS = 50,
 )
 
+# Silence all but the most critical errors, no more spamming
+import logging
+logging.basicConfig(level=logging.CRITICAL)
+
 db = Database(app)
 
 from blueprint import feedloggr
