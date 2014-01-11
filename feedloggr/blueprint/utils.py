@@ -1,6 +1,9 @@
 
 import datetime
 
+from peewee import IntegrityError as pie
+from peewee import DoesNotExist as pdne
+
 from .models import Date, Feed, Entry, db
 
 ######################################################################
@@ -20,7 +23,10 @@ def drop_tables(fail_silently=True):
 def get_news(current_date = datetime.date.today()):
     """Grab stored news for specified date."""
     news = []
-    date = Date.get_or_create(date = current_date) # TODO
+    try:
+        date = Date.get(Date.date == current_date)
+    except pdne:
+        date = Date.create(date = current_date)
     if not date:
         return news
     for feed in Feed.select().order_by(Feed.title.desc()):
@@ -36,8 +42,11 @@ def update_feeds():
     """Update database with new items from the feeds."""
     import feedparser
     from flask import current_app
-    from peewee import IntegrityError as pie
-    date = Date.get_or_create(date=datetime.date.today()) # TODO
+    today = datetime.date.today()
+    try:
+        date = Date.get(Date.date == today)
+    except pdne:
+        date = Date.create(date = today)
     new_items = 0
     for feed in Feed.select():
         link = feed.link
