@@ -3,7 +3,6 @@ import datetime
 
 from flask import Blueprint, render_template
 
-from .models import Date, Feed, Entry
 from .utils import get_news
 
 ######################################################################
