@@ -1,10 +1,9 @@
 
 from flask.ext.script import Manager
 
-from app import app
+from app import create_app
 
-from blueprint.models import Feeds
-
+app = create_app()
 manager = Manager(app)
 
 @manager.command
@@ -29,6 +28,7 @@ def routes():
 @manager.command
 def feeds():
     """Show a list of all stored feeds."""
+    from blueprint.models import Feeds
     for feed in Feeds.select():
         print('#%i %s (%s)' % (feed.id, feed.title, feed.link))
 
@@ -36,6 +36,7 @@ def feeds():
 def add(link, title=''):
     """Add a new feed with a URL and optionally a title."""
     from peewee import IntegrityError as pie
+    from blueprint.models import Feeds
     try:
         Feeds.create(title=title or link, link=link)
     except pie as error:
@@ -46,8 +47,9 @@ def add(link, title=''):
 @manager.command
 def remove(idno):
     """Remove a feed, using it's ID number."""
+    from blueprint.models import Feeds
     try:
-        feed = Feeds.get(Feed.id == idno)
+        feed = Feeds.get(Feeds.id == idno)
         feed.delete_instance()
     except Exception as error:
         print('Error while removing feed: %s' % error)
