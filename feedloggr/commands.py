@@ -8,9 +8,37 @@ manager = Manager(app)
 
 @manager.command
 def setup():
-    """Initiate databases."""
-    from app import setup_db
-    setup_db()
+    """Create tables and admin user."""
+    from getpass import getpass
+    from peewee import IntegrityError as pie
+    from peewee import OperationalError as poe
+    from blueprint.utils import create_tables
+
+    print('Creating tables.')
+    try:
+        create_tables(fail_silently = False)
+        app.auth.User.create_table(fail_silently = False)
+    except poe as error:
+        print('Error while creating tables: %s' % error)
+        return
+
+    print('Creating admin user.')
+    admin_name = raw_input('Username: ')
+    admin_password = getpass()
+    try:
+        admin_user = app.auth.User.create(
+            username = admin_name,
+            admin=True,
+            active=True,
+            password = '',
+            email='',
+        )
+        admin_user.set_password(admin_password)
+        admin_user.save()
+    except pie as error:
+        print('Error while creating admin user: %s' % error)
+        return
+    print('Database was successfully created.')
 
 @manager.command
 def drop():
