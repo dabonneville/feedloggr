@@ -4,33 +4,33 @@ import datetime
 from peewee import IntegrityError as pie
 from peewee import DoesNotExist as pdne
 
-from .models import Date, Feed, Entry, db
+from .models import Dates, Feeds, Entries, db
 
 ######################################################################
 
 def create_tables(fail_silently=True):
     """Create database tables used by feedloggr."""
-    Date.create_table(fail_silently=fail_silently)
-    Feed.create_table(fail_silently=fail_silently)
-    Entry.create_table(fail_silently=fail_silently)
+    Dates.create_table(fail_silently=fail_silently)
+    Feeds.create_table(fail_silently=fail_silently)
+    Entries.create_table(fail_silently=fail_silently)
 
 def drop_tables(fail_silently=True):
     """Drop database tables used by feedloggr."""
-    Date.drop_table(fail_silently=fail_silently)
-    Feed.drop_table(fail_silently=fail_silently)
-    Entry.drop_table(fail_silently=fail_silently)
+    Dates.drop_table(fail_silently=fail_silently)
+    Feeds.drop_table(fail_silently=fail_silently)
+    Entries.drop_table(fail_silently=fail_silently)
 
 def get_news(current_date = datetime.date.today()):
     """Grab stored news for specified date."""
     news = []
     try:
-        date = Date.get(Date.date == current_date)
+        date = Dates.get(Dates.date == current_date)
     except pdne:
         return news
-    for feed in Feed.select().order_by(Feed.title.desc()):
-        items = Entry.select().where(
-            Entry.feed == feed,
-            Entry.date == date
+    for feed in Feeds.select().order_by(Feeds.title.desc()):
+        items = Entries.select().where(
+            Entries.feed == feed,
+            Entries.date == date
         )
         if items.count() > 0:
             news.append((feed, items))
@@ -42,11 +42,11 @@ def update_feeds():
     from flask import current_app
     today = datetime.date.today()
     try:
-        date = Date.get(Date.date == today)
+        date = Dates.get(Dates.date == today)
     except pdne:
-        date = Date.create(date = today)
+        date = Dates.create(date = today)
     new_items = 0
-    for feed in Feed.select():
+    for feed in Feeds.select():
         link = feed.link
         if not link.startswith('http://'):
             link = 'http://%s' % link
@@ -57,7 +57,7 @@ def update_feeds():
             for i in xrange(items):
                 item = data.entries[i]
                 try:
-                    Entry.create(
+                    Entries.create(
                         title = item['title'] or item['link'],
                         link = item['link'],
                         date = date,
