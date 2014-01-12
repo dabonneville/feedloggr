@@ -64,5 +64,11 @@ class FeedloggrTestCase(unittest.TestCase):
 
 ######################################################################
 
+def run():
+    suite = unittest.TestLoader().loadTestsFromTestCase(
+        FeedloggrTestCase
+    )
+    unittest.TextTestRunner(verbosity=2).run(suite)
+
 if __name__ == '__main__':
-    unittest.main()
+    run()
