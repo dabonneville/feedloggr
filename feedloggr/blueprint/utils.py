@@ -51,7 +51,7 @@ def update_feeds():
         if not link.startswith('http://'):
             link = 'http://%s' % link
         data = feedparser.parse(link)
-        max_items = current_app.config['FEEDLOGGR_MAX_ITEMS'] or 25
+        max_items = current_app.config['FEEDLOGGR_MAX_ITEMS']
         items = min(max_items, len(data.entries))
         with db.database.transaction(): # avoids comitting after each new item
             for i in xrange(items):
