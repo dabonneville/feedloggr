@@ -2,48 +2,61 @@
 import datetime
 import unittest
 
-from app import create_app
+from app import app
+from auth import auth
+
+from blueprint.utils import drop_tables, create_tables
+from blueprint.models import Dates, Feeds, Entries
 
 class FeedloggrTestCase(unittest.TestCase):
     def setUp(self):
-        config = {
-            'TESTING': True,
-            'DATABASE': {
-                'name': ':memory:',
-                'engine': 'peewee.SqliteDatabase',
-            },
-        }
-        self.app = create_app(config)
-        self.client = self.app.test_client()
-        from blueprint.utils import create_tables
-        create_tables(fail_silently = True)
-        self.app.auth.User.create_table(fail_silently = True)
-
-    def tearDown(self):
-        from blueprint.utils import drop_tables
+        self.client = app.test_client()
         drop_tables(fail_silently = True)
-        self.app.auth.User.drop_table(fail_silently = True)
+        auth.User.drop_table(fail_silently = True)
+        create_tables(fail_silently = False)
+        auth.User.create_table(fail_silently = False)
 
     def populate_db(self):
-        from blueprint.models import Dates, Feeds, Entries, db
+        """Populate the database with some test data."""
         today = datetime.date.today()
         date = Dates.create(date = today)
         feed = Feeds.create(title='feed_title', link='feed_link')
         Entries.create(
             title='entry_title', link='entry_link', date=date, feed=feed
         )
-        db.database.commit()
+
+    def create_user(self):
+        """Create a admin user."""
+        user = auth.User.create(
+            username = 'admin',
+            admin = True,
+            active = True,
+            password = '',
+            email = '',
+        )
+        user.set_password('admin')
+        user.save()
+
+    def login(self):
+        """Login to the admin interface."""
+        self.create_user()
+        self.client.post('/accounts/login/', data={
+            'username': 'admin',
+            'password': 'admin',
+        })
+
+    def logout(self):
+        """Logout from the admin interface."""
+        self.client.post('/accounts/logout/')
 
     def test_database(self):
         """Test if the database has been created."""
-        from blueprint.models import Dates, Feeds, Entries
         self.assertEqual(Dates._meta.db_table, 'dates')
         self.assertEqual(Feeds._meta.db_table, 'feeds')
         self.assertEqual(Entries._meta.db_table, 'entries')
 
     def test_index_view(self):
         """Test if the view contains items and URLs behave correctly."""
-        # TODO/BUG: must pass a test BEFORE we can use client.get()!!!!!
         # Test with an empty database
         tmp = self.client.get('/').data
         self.assertIn('Sorry, no links today!', tmp)
@@ -65,6 +78,11 @@ class FeedloggrTestCase(unittest.TestCase):
 ######################################################################
 
 def run():
+    if not app.testing:
+        # Make them think twice before testing, since the db will be wiped
+        print('No test config loaded!')
+        return
+
     suite = unittest.TestLoader().loadTestsFromTestCase(
         FeedloggrTestCase
     )
