@@ -1,6 +1,9 @@
 
 from flask_peewee.admin import Admin, AdminPanel
 
+from app import app
+from auth import auth
+
 from blueprint.models import Feeds, FeedsAdmin, Dates, Entries
 
 class StatsPanel(AdminPanel):
@@ -20,10 +23,6 @@ class StatsPanel(AdminPanel):
             'average_per_feed': average_per_feed,
         }
 
-def init_admin(app, auth):
-    """Setup the admin app."""
-    admin = Admin(app, auth)
-    admin.register(Feeds, FeedsAdmin)
-    admin.register_panel('Statistics', StatsPanel)
-    admin.setup()
-    return admin
+admin = Admin(app, auth)
+admin.register(Feeds, FeedsAdmin)
+admin.register_panel('Statistics', StatsPanel)

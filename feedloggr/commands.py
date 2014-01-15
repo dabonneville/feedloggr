@@ -1,9 +1,9 @@
 
 from flask.ext.script import Manager
 
-from app import create_app
+from app import app
+from auth import auth
 
-app = create_app()
 manager = Manager(app)
 
 @manager.command
@@ -17,7 +17,7 @@ def setup():
     print('Creating tables.')
     try:
         create_tables(fail_silently = False)
-        app.auth.User.create_table(fail_silently = False)
+        auth.User.create_table(fail_silently = False)
     except poe as error:
         print('Error while creating tables: %s' % error)
         return
@@ -26,7 +26,7 @@ def setup():
     admin_name = raw_input('Username: ')
     admin_password = getpass()
     try:
-        admin_user = app.auth.User.create(
+        admin_user = auth.User.create(
             username = admin_name,
             admin=True,
             active=True,
@@ -45,7 +45,7 @@ def drop():
     """Drop all database tables used by feedloggr."""
     from blueprint.utils import drop_tables
     drop_tables()
-    app.auth.User.drop_table(fail_silently=True)
+    auth.User.drop_table(fail_silently=True)
     print('All tables dropped.')
 
 @manager.command
