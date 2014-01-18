@@ -2,8 +2,7 @@
 import datetime
 import unittest
 
-from app import app
-from auth import auth
+from main import app, auth
 
 from blueprint.utils import drop_tables, create_tables
 from blueprint.models import Dates, Feeds, Entries
