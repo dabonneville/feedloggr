@@ -10,6 +10,3 @@ app.register_blueprint(feedloggr)
 
 admin.setup()
 
-if __name__ == '__main__':
-    from commands import manager
-    manager.run()
