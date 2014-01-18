@@ -4,7 +4,7 @@ import unittest
 
 from feedloggr.main import app, auth
 
-from feedloggr.blueprint.utils import drop_tables, create_tables
+from feedloggr.blueprint.utils import drop_tables, create_tables, update_feeds
 from feedloggr.blueprint.models import Dates, Feeds, Entries
 
 class FeedloggrTestCase(unittest.TestCase):
@@ -50,6 +50,13 @@ class FeedloggrTestCase(unittest.TestCase):
         self.assertEqual(Feeds._meta.db_table, 'feeds')
         self.assertEqual(Entries._meta.db_table, 'entries')
 
+    def test_update_database(self):
+        """ Test if we can update the database with new items."""
+        self.populate_db()
+        update_feeds()
+        tmp = Entries.select().count()
+        self.assertEqual(tmp, 1)
+
     def test_index_view(self):
         """Test if the view contains items and URLs behave correctly."""
         # Test with an empty database
@@ -71,6 +78,7 @@ class FeedloggrTestCase(unittest.TestCase):
         self.assertIn('entry_title', tmp)
 
     def test_admin_view(self):
+        """Test the custom admin panels."""
         self.login()
         tmp = self.client.get('/admin/').data
         self.assertIn('Average entries per day: 0.0', tmp)

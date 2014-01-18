@@ -39,7 +39,7 @@ def get_news(current_date = datetime.date.today()):
 def update_feeds():
     """Update database with new items from the feeds."""
     import feedparser
-    from flask import current_app
+    from ..app import app
     today = datetime.date.today()
     try:
         date = Dates.get(Dates.date == today)
@@ -51,7 +51,7 @@ def update_feeds():
         if not link.startswith('http://'):
             link = 'http://%s' % link
         data = feedparser.parse(link)
-        max_items = current_app.config['FEEDLOGGR_MAX_ITEMS']
+        max_items = app.config['FEEDLOGGR_MAX_ITEMS']
         items = min(max_items, len(data.entries))
         with db.database.transaction(): # avoids comitting after each new item
             for i in xrange(items):
