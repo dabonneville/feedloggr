@@ -14,8 +14,8 @@ class StatsPanel(AdminPanel):
         feeds = Feeds.select().count()
         dates = Dates.select().count()
         entries = Entries.select().count()
-        average_per_day = (float(entries) / dates)
-        average_per_feed = (float(entries) / feeds)
+        average_per_day = (float(entries) / (dates or 1))
+        average_per_feed = (float(entries) / (feeds or 1))
         return {
             'total_entries': entries,
             'total_days': dates,
