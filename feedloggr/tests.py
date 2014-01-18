@@ -44,10 +44,6 @@ class FeedloggrTestCase(unittest.TestCase):
             'password': 'admin',
         })
 
-    def logout(self):
-        """Logout from the admin interface."""
-        self.client.post('/accounts/logout/')
-
     def test_database(self):
         """Test if the database has been created."""
         self.assertEqual(Dates._meta.db_table, 'dates')
@@ -73,6 +69,15 @@ class FeedloggrTestCase(unittest.TestCase):
         tmp = self.client.get('/').data
         self.assertIn('feed_title', tmp)
         self.assertIn('entry_title', tmp)
+
+    def test_admin_view(self):
+        self.login()
+        tmp = self.client.get('/admin/').data
+        self.assertIn('Average entries per day: 0.0', tmp)
+
+        self.populate_db()
+        tmp = self.client.get('/admin/').data
+        self.assertIn('Average entries per day: 1.0', tmp)
 
 ######################################################################
 
