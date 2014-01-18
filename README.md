@@ -3,68 +3,71 @@ Feedloggr
 Collect news from your favorite RSS/Atom feeds and show them in your flask application.
 This is the bigger brother of [simple_feedlog](https://github.com/lmas/simple_feedlog).
 
+[![Build Status](https://travis-ci.org/lmas/Feedloggr.png?branch=master)](https://travis-ci.org/lmas/Feedloggr)
+[![Coverage Status](https://coveralls.io/repos/lmas/Feedloggr/badge.png?branch=master)](https://coveralls.io/r/lmas/Feedloggr?branch=master)
+
 Installation
 ------------
-First things first, install the libraries:
+First things first, clone this git repo to your desired box:
+
+    git clone https://github.com/lmas/Feedloggr.git
+
+You now have a local copy of Feedloggr! But in order to run it, it needs some
+libraries installed:
 
     pip install -r requirements.txt
 
-Copy the Feedloggr blueprint into your flask app directory:
+Next, you need to initiate the database:
 
-    cp -r feedloggr/ /path/to/flask/app
+    ./manager.py setup
 
-Import and register the blueprint in your app:
+Enter a new name and password for an admin user, so you can log in to the web
+interface.
+You can now run a local instance, for example by using `manager.py`:
 
-    from feedloggr import blueprint
-    app.register_blueprint(blueprint, url_prefix='/feedloggr')
-
-Make sure you have a peewee database up and running, so Feedloggr can store it's
-data somewhere. Feedloggr tries to import the database with a:
-
-    from app import db
-You might want to change that in `feedloggr/models.py` or change your app accordingly.
-
-Register Feedloggr with a management script running flask-script:
-
-    from feedloggr.utils import manager as feedloggr_manager
-    manager.add_command('feedloggr', feedloggr_manager)
-
-You can now manage Feedloggr via the command line.
+    ./manager.py runserver
 
 Configuration
 -------------
-There's only one setting you need to add to your app config:
+A default config is loaded from `feedloggr/config.py`. You can override it's
+settings by pointing the `FEEDLOGGR_CONFIG` environment variable to another
+config file. Feedloggr will try to load that file from an `instance` dir, which
+is not under version control.
+See `./tools/run_tests.py` for an example.
 
-    FEEDLOGGR_MAX_ITEMS = 50
+Valid config values are, including [Flask's builtins](http://flask.pocoo.org/docs/config/#builtin-configuration-values):
 
-This tells Feedloggr how many items it should try to insert into the database
-each time it's updating it's feeds.
-Restart your app and you should now be running Feedloggr! You can now visit it
-at `http://your.flask.site/feedloggr`.
+    FEEDLOGGR_MAX_ITEMS = [int]
+    Tell Feedloggr how many items it should try to load from a feed when
+    updating news.
 
 Management
 ----------
-The only way to manage Feedloggr is for now via flask-script.
-Available commands are:
+You can easily manage Feedloggr from either a web admin interface (go to
+`http://localhost:5000/admin/` to login) or from the command line (`manager.py`).
+The web interface should be pretty self explanatory, once you login.
+`manager.py`, on the other hand, has a range of commands:
 
-    list - Show a list of all stored feeds.
-    add <link> [-t title] - Add a new feed with a URL and optionally a title.
-    remove <idno> - Remove a feed, using it's ID number.
-    update - Update all feeds stored in the database.
+    shell               Runs a Python shell inside Flask application context.
+    setup               Create tables and admin user.
+    drop                Drop all database tables used by feedloggr.
+    update              Update all feeds stored in the database.
+    remove              Remove a feed, using it's ID number.
+    runserver           Runs the Flask development server i.e. app.run()
+    add                 Add a new feed with a URL and optionally a title.
+    routes              List all routes for this app.
+    feeds               Show a list of all stored feeds.
+
+Run `./manager.py -h [command]` for more details.
 
 You should run the update command daily, so Feedloggr can download new items
 and show them for you. On a linux host, this is easily done with `cron`.
-
-Example
--------
-Inside the directory `example/` is a simple app which shows you how you can run
-Feedloggr.
 
 Contribution
 ------------
 Any and all contributions are welcome! Only requirement is that you make sure to
 (at least loosely) follow [PEP8](http://www.python.org/dev/peps/pep-0008/) when
-editing the code.
+editing the code. Also make sure your code will pass the tests.
 
 Credits
 -------
