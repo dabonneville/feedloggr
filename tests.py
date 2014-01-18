@@ -2,10 +2,10 @@
 import datetime
 import unittest
 
-from main import app, auth
+from feedloggr.main import app, auth
 
-from blueprint.utils import drop_tables, create_tables
-from blueprint.models import Dates, Feeds, Entries
+from feedloggr.blueprint.utils import drop_tables, create_tables
+from feedloggr.blueprint.models import Dates, Feeds, Entries
 
 class FeedloggrTestCase(unittest.TestCase):
     def setUp(self):

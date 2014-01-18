@@ -1,8 +1,8 @@
+#!/usr/bin/env python2
 
 from flask.ext.script import Manager
 
-from app import app
-from auth import auth
+from feedloggr.main import app, auth
 
 manager = Manager(app)
 
@@ -12,7 +12,7 @@ def setup():
     from getpass import getpass
     from peewee import IntegrityError as pie
     from peewee import OperationalError as poe
-    from blueprint.utils import create_tables
+    from feedloggr.blueprint.utils import create_tables
 
     print('Creating tables.')
     try:
@@ -43,7 +43,7 @@ def setup():
 @manager.command
 def drop():
     """Drop all database tables used by feedloggr."""
-    from blueprint.utils import drop_tables
+    from feedloggr.blueprint.utils import drop_tables
     drop_tables()
     auth.User.drop_table(fail_silently=True)
     print('All tables dropped.')
@@ -56,7 +56,7 @@ def routes():
 @manager.command
 def feeds():
     """Show a list of all stored feeds."""
-    from blueprint.models import Feeds
+    from feedloggr.blueprint.models import Feeds
     for feed in Feeds.select():
         print('#%i %s (%s)' % (feed.id, feed.title, feed.link))
 
@@ -64,7 +64,7 @@ def feeds():
 def add(link, title=''):
     """Add a new feed with a URL and optionally a title."""
     from peewee import IntegrityError as pie
-    from blueprint.models import Feeds
+    from feedloggr.blueprint.models import Feeds
     try:
         Feeds.create(title=title or link, link=link)
     except pie as error:
@@ -75,7 +75,7 @@ def add(link, title=''):
 @manager.command
 def remove(idno):
     """Remove a feed, using it's ID number."""
-    from blueprint.models import Feeds
+    from feedloggr.blueprint.models import Feeds
     try:
         feed = Feeds.get(Feeds.id == idno)
         feed.delete_instance()
@@ -87,7 +87,12 @@ def remove(idno):
 @manager.command
 def update():
     """Update all feeds stored in the database."""
-    from blueprint.utils import update_feeds
+    from feedloggr.blueprint.utils import update_feeds
     new_items = update_feeds()
     print('Database was updated with %i new items.' % new_items)
+
+######################################################################
+
+if __name__ == '__main__':
+    manager.run()
 
