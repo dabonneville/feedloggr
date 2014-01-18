@@ -8,7 +8,8 @@ python:
 install:
     - "pip install -r requirements.txt"
     - "pip install coveralls"
-script: coverage run --source=feedloggr feedloggr/tests.py
+script:
+    ./tools/run_tests.sh
 after_success:
   coveralls
 
