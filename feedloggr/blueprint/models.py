@@ -2,7 +2,7 @@
 from peewee import DateField, CharField, ForeignKeyField
 from flask_peewee.admin import ModelAdmin
 
-from app import db
+from ..app import db
 
 ######################################################################
 
