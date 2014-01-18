@@ -54,12 +54,6 @@ def routes():
     print(app.url_map)
 
 @manager.command
-def test():
-    """Run the unit tests."""
-    import tests
-    tests.run()
-
-@manager.command
 def feeds():
     """Show a list of all stored feeds."""
     from blueprint.models import Feeds
