@@ -41,6 +41,9 @@ Valid config values are, including [Flask's builtins](http://flask.pocoo.org/doc
     Tell Feedloggr how many items it should try to load from a feed when
     updating news.
 
+    FEEDLOGGR_URL = [string]
+    Register the Feedloggr blueprint at this url prefix (ie. at "/feedloggr").
+
 Management
 ----------
 You can easily manage Feedloggr from either a web admin interface (go to

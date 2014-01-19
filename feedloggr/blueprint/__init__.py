@@ -16,6 +16,10 @@ def register_admin():
         return True
 
 def setup_blueprint(app):
-    app.register_blueprint(blueprint)
+    try:
+        url = app.config['FEEDLOGGR_URL']
+    except KeyError:
+        url = None
+    app.register_blueprint(blueprint, url_prefix=url)
     create_tables(fail_silently=True)
     register_admin()
