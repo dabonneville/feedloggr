@@ -4,6 +4,7 @@ in your flask application."""
 
 from .views import blueprint
 from .models import Dates, Feeds, FeedsAdmin, Entries
+from .utils import create_tables
 
 def register_admin():
     try:
@@ -13,3 +14,8 @@ def register_admin():
     else:
         admin.register(Feeds, FeedsAdmin)
         return True
+
+def setup_blueprint(app):
+    app.register_blueprint(blueprint)
+    create_tables(fail_silently=True)
+    register_admin()
