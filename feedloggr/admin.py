@@ -4,7 +4,7 @@ from flask_peewee.admin import Admin, AdminPanel
 from app import app
 from auth import auth
 
-from blueprint.models import Feeds, FeedsAdmin, Dates, Entries
+from blueprint import Feeds, Dates, Entries
 
 class StatsPanel(AdminPanel):
     """Show some simple statistics on the admin dashboard."""
@@ -24,5 +24,4 @@ class StatsPanel(AdminPanel):
         }
 
 admin = Admin(app, auth)
-admin.register(Feeds, FeedsAdmin)
 admin.register_panel('Statistics', StatsPanel)

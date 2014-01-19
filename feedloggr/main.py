@@ -5,8 +5,9 @@ from app import app, db
 from auth import auth
 from admin import admin
 
-from blueprint import feedloggr
-app.register_blueprint(feedloggr)
+import blueprint
+app.register_blueprint(blueprint.blueprint)
+blueprint.register_admin()
 
 admin.setup()
 
