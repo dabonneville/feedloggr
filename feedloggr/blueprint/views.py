@@ -7,7 +7,7 @@ from .utils import get_news
 
 ######################################################################
 
-feedloggr = Blueprint(
+blueprint = Blueprint(
     'feedloggr',
     __name__,
     template_folder='templates',
@@ -15,8 +15,8 @@ feedloggr = Blueprint(
     static_url_path='/static/feedloggr',
 )
 
-@feedloggr.route('/')
-@feedloggr.route('/<int:year>-<int:month>-<int:day>')
+@blueprint.route('/')
+@blueprint.route('/<int:year>-<int:month>-<int:day>')
 def index(year=None, month=None, day=None):
     """News index, show news for selected date (unspecified or yyyy-mm-dd)."""
     try:
