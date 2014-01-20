@@ -7,7 +7,7 @@ from admin import admin
 
 import blueprint
 app.register_blueprint(blueprint.blueprint)
-blueprint.register_admin()
 
+auth.register_admin(admin)
 admin.setup()
 
