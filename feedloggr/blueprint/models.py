@@ -2,7 +2,8 @@
 from peewee import DateField, CharField, ForeignKeyField
 from flask_peewee.admin import ModelAdmin
 
-from ..app import db
+from peewee import Proxy, Model
+db_proxy = Proxy()
 
 ######################################################################
 
@@ -10,16 +11,22 @@ class FeedsAdmin(ModelAdmin):
     """Show pretty admin interface for feeds."""
     columns = ('title', 'link')
 
-class Dates(db.Model):
+######################################################################
+
+class BaseModel(Model):
+    class Meta:
+        database = db_proxy
+
+class Dates(BaseModel):
     """Stores dates as datetime.date objects."""
     date = DateField(null=False, unique=True)
 
-class Feeds(db.Model):
+class Feeds(BaseModel):
     """Stores RSS/Atom feeds with a title and link."""
     title = CharField(null=False)
     link = CharField(null=False, unique=True)
 
-class Entries(db.Model):
+class Entries(BaseModel):
     """Stores news items with a title, link, date and feed."""
     title = CharField(null=False)
     link = CharField(null=False, unique=True)
