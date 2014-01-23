@@ -1,22 +1,12 @@
 
 import datetime
 
-from flask import Blueprint, render_template
+from flask import render_template
 
 from .utils import get_news
 
 ######################################################################
 
-blueprint = Blueprint(
-    'feedloggr',
-    __name__,
-    template_folder='templates',
-    static_folder='static',
-    static_url_path='/static/feedloggr',
-)
-
-@blueprint.route('/')
-@blueprint.route('/<int:year>-<int:month>-<int:day>')
 def index(year=None, month=None, day=None):
     """News index, show news for selected date (unspecified or yyyy-mm-dd)."""
     try:
