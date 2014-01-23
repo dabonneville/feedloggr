@@ -1,10 +1,11 @@
 
 import datetime
 
+from flask import current_app
 from peewee import IntegrityError as pie
 from peewee import DoesNotExist as pdne
 
-from .models import Dates, Feeds, Entries, db
+from .models import Dates, Feeds, Entries
 
 ######################################################################
 
@@ -27,7 +28,7 @@ def get_news(current_date = datetime.date.today()):
         date = Dates.get(Dates.date == current_date)
     except pdne:
         return news
-    for feed in Feeds.select().order_by(Feeds.title.desc()):
+    for feed in Feeds.select().order_by(Feeds.title):
         items = Entries.select().where(
             Entries.feed == feed,
             Entries.date == date
@@ -39,7 +40,6 @@ def get_news(current_date = datetime.date.today()):
 def update_feeds():
     """Update database with new items from the feeds."""
     import feedparser
-    from ..app import app
     today = datetime.date.today()
     try:
         date = Dates.get(Dates.date == today)
@@ -51,9 +51,10 @@ def update_feeds():
         if not link.startswith('http://'):
             link = 'http://%s' % link
         data = feedparser.parse(link)
-        max_items = app.config['FEEDLOGGR_MAX_ITEMS']
+        max_items = current_app.config.get('FEEDLOGGR_MAX_ITEMS', 40)
         items = min(max_items, len(data.entries))
-        with db.database.transaction(): # avoids comitting after each new item
+        with Entries._meta.database.transaction():
+            # avoids comitting after each new item
             for i in xrange(items):
                 item = data.entries[i]
                 try:
