@@ -36,13 +36,36 @@ Management
 You can easily manage Feedloggr from the builtin web admin interface, from
 flask-peewee, by visiting `http://your.domain.com/feedloggr/admin/` and logging
 in there.
+Before that, you have to setup a admin user with flask_peewee.auth:
 
-Before that, you have to setup a admin user. This is easily done with the script
-`tools/setup_admin.sh`.
+    # --- Setup a flask app with flask_peewee.auth before this ---
+    from getpass import getpass
+    admin_name = raw_input('Username: ')
+
+    user = auth.User.create(
+        username = 'admin',
+        email='admin@example.com',
+        password = '',
+        admin=True,
+        active=True,
+    )
+    user.set_password(getpass())
+    user.save()
+
+You can then login to the admin interface and add new Rss/Atom feed URLs.
 
 Updating Feedloggr with more, up to date news is done by calling
 `feedloggr.utils.update_feeds()` within a [flask app context](http://flask.pocoo.org/docs/appcontext/).
-`tools/update.sh` can do this for you easily.
+Example:
+
+    # --- Setup a flask app before this ---
+    from feedloggr.utils import update_feeds
+    with flask_app.app_context():
+        new_items = update_feeds()
+        print('Feedloggr was updated with %i new items.' % new_items)
+
+Feedloggr will then run through each one of it's stored feeds' URLs and download
+any new items and store them in the database.
 
 Example
 -------
