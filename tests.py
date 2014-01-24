@@ -45,7 +45,8 @@ class FeedloggrTestCase(unittest.TestCase):
     def test_update_database(self):
         """ Test if we can update the database with new items."""
         self.populate_db()
-        update_feeds()
+        with self.app.app_context():
+            update_feeds()
         tmp = Entries.select().count()
         self.assertEqual(tmp, 1)
 
