@@ -17,6 +17,7 @@ class FeedloggrTestCase(unittest.TestCase):
                 'name': 'test.db',
                 'engine': 'peewee.SqliteDatabase',
             },
+            'FEEDLOGGR_URL': '/test',
         }
         self.app = create_app(self.config)
         Feedloggr(self.app, self.app.db, self.app.admin)
@@ -51,20 +52,20 @@ class FeedloggrTestCase(unittest.TestCase):
     def test_index_view(self):
         """Test if the view contains items and URLs behave correctly."""
         # Test with an empty database
-        tmp = self.client.get('/').data
+        tmp = self.client.get('/test/').data
         self.assertIn('Sorry, no links today!', tmp)
-        tmp = self.client.get('/1970-01-01').data
+        tmp = self.client.get('/test/1970-01-01').data
         self.assertIn('Sorry, no links today!', tmp)
 
         # Test URLs
-        tmp = self.client.get('/1970-01-01').data
+        tmp = self.client.get('/test/1970-01-01').data
         self.assertIn('1970-01-02', tmp)
-        tmp = self.client.get('/1970-01-0a').status_code
+        tmp = self.client.get('/test/1970-01-0a').status_code
         self.assertEqual(404, tmp)
 
         # Test with populated database
         self.populate_db()
-        tmp = self.client.get('/').data
+        tmp = self.client.get('/test/').data
         self.assertIn('feed_title', tmp)
         self.assertIn('entry_title', tmp)
 
