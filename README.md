@@ -4,7 +4,7 @@ Collect news from your favorite RSS/Atom feeds and show them in your flask appli
 This is the bigger brother of [simple_feedlog](https://github.com/lmas/simple_feedlog).
 
 [![Build Status](https://travis-ci.org/lmas/Feedloggr.png?branch=master)](https://travis-ci.org/lmas/Feedloggr)
-[![Coverage Status](https://coveralls.io/repos/lmas/Feedloggr/badge.png?branch=master)](https://coveralls.io/r/lmas/Feedloggr?branch=master)
+[![Coverage Status](https://coveralls.io/repos/lmas/Feedloggr/badge.png)](https://coveralls.io/r/lmas/Feedloggr)
 
 Installation
 ------------
