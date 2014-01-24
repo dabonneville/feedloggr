@@ -21,5 +21,5 @@ def index(year=None, month=None, day=None):
         'next_day': str(date + delta),
         'prev_day': str(date - delta),
     }
-    return render_template('index.html', **context)
+    return render_template('feedloggr/index.html', **context)
 

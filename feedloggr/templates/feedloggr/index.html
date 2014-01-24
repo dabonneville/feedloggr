@@ -1,7 +1,4 @@
 {% extends "base.html" %}
-{% block style %}{{url_for('.static', filename='style.css')}}{% endblock %}
-{% block title %}{{today}} | Feedloggr{% endblock %}
-
 {% block content %}
 <header>
     <a href="{{ url_for(".index")}}{{next_day}}">&lt;&lt;</a>
