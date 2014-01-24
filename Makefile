@@ -8,6 +8,7 @@ analyze:
 test:
 	. env/bin/activate && \
 	coverage run --source=feedloggr tests.py
+	rm -f test.db
 
 clean:
 	rm -f $(PACKAGE_NAME)/*.pyc
