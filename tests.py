@@ -2,18 +2,29 @@
 import datetime
 import unittest
 
-from feedloggr.main import app, auth
+from example.app import create_app
 
-from feedloggr.blueprint.utils import drop_tables, create_tables, update_feeds
-from feedloggr.blueprint.models import Dates, Feeds, Entries
+from feedloggr import Feedloggr
+from feedloggr.utils import drop_tables, create_tables, update_feeds
+from feedloggr.models import Dates, Feeds, Entries
 
 class FeedloggrTestCase(unittest.TestCase):
     def setUp(self):
-        self.client = app.test_client()
+        self.config = {
+            'DEBUG': False,
+            'TESTING': True,
+            'DATABASE': {
+                'name': 'test.db',
+                'engine': 'peewee.SqliteDatabase',
+            },
+        }
+        self.app = create_app(self.config)
+        Feedloggr(self.app, self.app.db, self.app.admin)
+        self.app.admin.setup()
+        self.client = self.app.test_client()
+
         drop_tables(fail_silently = True)
-        auth.User.drop_table(fail_silently = True)
         create_tables(fail_silently = False)
-        auth.User.create_table(fail_silently = False)
 
     def populate_db(self):
         """Populate the database with some test data."""
@@ -23,26 +34,6 @@ class FeedloggrTestCase(unittest.TestCase):
         Entries.create(
             title='entry_title', link='entry_link', date=date, feed=feed
         )
-
-    def create_user(self):
-        """Create a admin user."""
-        user = auth.User.create(
-            username = 'admin',
-            admin = True,
-            active = True,
-            password = '',
-            email = '',
-        )
-        user.set_password('admin')
-        user.save()
-
-    def login(self):
-        """Login to the admin interface."""
-        self.create_user()
-        self.client.post('/accounts/login/', data={
-            'username': 'admin',
-            'password': 'admin',
-        })
 
     def test_database(self):
         """Test if the database has been created."""
@@ -77,24 +68,9 @@ class FeedloggrTestCase(unittest.TestCase):
         self.assertIn('feed_title', tmp)
         self.assertIn('entry_title', tmp)
 
-    def test_admin_view(self):
-        """Test the custom admin panels."""
-        self.login()
-        tmp = self.client.get('/admin/').data
-        self.assertIn('Average entries per day: 0.0', tmp)
-
-        self.populate_db()
-        tmp = self.client.get('/admin/').data
-        self.assertIn('Average entries per day: 1.0', tmp)
-
 ######################################################################
 
 def run():
-    if not app.testing:
-        # Make them think twice before testing, since the db will be wiped
-        print('No test config loaded!')
-        return
-
     suite = unittest.TestLoader().loadTestsFromTestCase(
         FeedloggrTestCase
     )
