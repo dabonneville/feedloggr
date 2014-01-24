@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# The config file will be loaded relative from the instance folder
-export FEEDLOGGR_CONFIG=testing.py
+source env/bin/activate
 coverage run --source=feedloggr tests.py
-STATUS=$?
-unset FEEDLOGGR_CONFIG
-exit $STATUS
+exit $?
