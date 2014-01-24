@@ -20,17 +20,6 @@ In order to run Feedloggr, it needs some libraries installed:
 
 You can now run Feedloggr in your flask app!
 
-Configuration
--------------
-Feedloggr has only a few, simple configuration variables it will try to use:
-
-    FEEDLOGGR_MAX_ITEMS = [int]
-    Tell Feedloggr how many items it should try to load from a feed when
-    updating news.
-
-    FEEDLOGGR_URL = [string]
-    Register Feedloggr at this url prefix (example: /feedloggr).
-
 Management
 ----------
 You can easily manage Feedloggr from the builtin web admin interface, from
@@ -67,10 +56,35 @@ Example:
 Feedloggr will then run through each one of it's stored feeds' URLs and download
 any new items and store them in the database.
 
+Configuration
+-------------
+Feedloggr has only a few, simple configuration variables it will try to use:
+
+    FEEDLOGGR_MAX_ITEMS = [int]
+    Tell Feedloggr how many items it should try to load from a feed when
+    updating news.
+
+    FEEDLOGGR_URL = [string]
+    Register Feedloggr at this url prefix (example: /feedloggr).
+
+Templates
+---------
+By default, Feedloggr tries to load a base template `base.html` and add it's
+content to a `content` block. You can easily make your own base template in your
+app and override Feedloggr's. Example:
+
+    <!DOCTYPE html>
+    <meta charset="UTF-8">
+    <title>Your title here!</title>
+
+    <div>
+        {% block content %}{% endblock %}
+    </div>
+
 Example
 -------
 Inside of `example/` is a fully working example app. You can either run `python
-app.py`, quick 'n easy, or `python manager.py', with some more functionality.
+app.py`, quick 'n easy, or `python manager.py`, with some more functionality.
 `manager.py` is using flask-script, which enables some custom commands you can
 run from the terminal:
 
