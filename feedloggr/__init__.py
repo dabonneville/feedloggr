@@ -8,7 +8,7 @@ from .models import db_proxy, Feeds, FeedsAdmin
 from .views import index
 from .utils import create_tables
 
-class Feedloggr():
+class Feedloggr(object):
     def __init__(self, app, db=None, admin=None):
         self.app = app
         if app is not None:

@@ -2,10 +2,10 @@
 PACKAGE_NAME=feedloggr
 
 analyze:
-	pylint tests.py example/*.py feedloggr/*.py | less
+	pylint tests.py example/*.py $(PACKAGE_NAME)/*.py | less
 
 test:
-	coverage run --source=feedloggr tests.py
+	coverage run --source=$(PACKAGE_NAME) tests.py
 	rm -f test.db
 
 clean:

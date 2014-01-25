@@ -3,6 +3,8 @@ from peewee import DateField, CharField, ForeignKeyField
 from flask_peewee.admin import ModelAdmin
 
 from peewee import Proxy, Model
+# Use a proxy so we can define the models now and init the database at
+# a later time.
 db_proxy = Proxy()
 
 ######################################################################
