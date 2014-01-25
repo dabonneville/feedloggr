@@ -2,6 +2,4 @@
 *.py[co]
 *.db
 .coverage
-instance/*
-!instance/testing.py
 env/*
