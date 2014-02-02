@@ -2,4 +2,4 @@
 *.py[co]
 *.db
 .coverage
-env/*
+venv/*
