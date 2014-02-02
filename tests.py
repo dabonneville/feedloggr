@@ -6,7 +6,7 @@ from example.app import create_app
 
 from feedloggr import Feedloggr
 from feedloggr.utils import drop_tables, create_tables, update_feeds
-from feedloggr.models import Dates, Feeds, Entries
+from feedloggr.models import feedloggr_Dates, feedloggr_Feeds, feedloggr_Entries
 
 class FeedloggrTestCase(unittest.TestCase):
     def setUp(self):
@@ -30,24 +30,24 @@ class FeedloggrTestCase(unittest.TestCase):
     def populate_db(self):
         """Populate the database with some test data."""
         today = datetime.date.today()
-        date = Dates.create(date = today)
-        feed = Feeds.create(title='feed_title', link='feed_link')
-        Entries.create(
+        date = feedloggr_Dates.create(date = today)
+        feed = feedloggr_Feeds.create(title='feed_title', link='feed_link')
+        feedloggr_Entries.create(
             title='entry_title', link='entry_link', date=date, feed=feed
         )
 
     def test_database(self):
         """Test if the database has been created."""
-        self.assertEqual(Dates._meta.db_table, 'dates')
-        self.assertEqual(Feeds._meta.db_table, 'feeds')
-        self.assertEqual(Entries._meta.db_table, 'entries')
+        self.assertEqual(feedloggr_Dates._meta.db_table, 'dates')
+        self.assertEqual(feedloggr_Feeds._meta.db_table, 'feeds')
+        self.assertEqual(feedloggr_Entries._meta.db_table, 'entries')
 
     def test_update_database(self):
         """ Test if we can update the database with new items."""
         self.populate_db()
         with self.app.app_context():
             update_feeds()
-        tmp = Entries.select().count()
+        tmp = feedloggr_Entries.select().count()
         self.assertEqual(tmp, 1)
 
     def test_index_view(self):

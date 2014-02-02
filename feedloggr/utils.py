@@ -5,33 +5,33 @@ from flask import current_app
 from peewee import IntegrityError as pie
 from peewee import DoesNotExist as pdne
 
-from .models import Dates, Feeds, Entries
+from .models import feedloggr_Dates, feedloggr_Feeds, feedloggr_Entries
 
 ######################################################################
 
 def create_tables(fail_silently=True):
     """Create database tables used by feedloggr."""
-    Dates.create_table(fail_silently=fail_silently)
-    Feeds.create_table(fail_silently=fail_silently)
-    Entries.create_table(fail_silently=fail_silently)
+    feedloggr_Dates.create_table(fail_silently=fail_silently)
+    feedloggr_Feeds.create_table(fail_silently=fail_silently)
+    feedloggr_Entries.create_table(fail_silently=fail_silently)
 
 def drop_tables(fail_silently=True):
     """Drop database tables used by feedloggr."""
-    Dates.drop_table(fail_silently=fail_silently)
-    Feeds.drop_table(fail_silently=fail_silently)
-    Entries.drop_table(fail_silently=fail_silently)
+    feedloggr_Dates.drop_table(fail_silently=fail_silently)
+    feedloggr_Feeds.drop_table(fail_silently=fail_silently)
+    feedloggr_Entries.drop_table(fail_silently=fail_silently)
 
 def get_news(current_date = datetime.date.today()):
     """Grab stored news for specified date."""
     news = []
     try:
-        date = Dates.get(Dates.date == current_date)
+        date = feedloggr_Dates.get(feedloggr_Dates.date == current_date)
     except pdne:
         return news
-    for feed in Feeds.select().order_by(Feeds.title):
-        items = Entries.select().where(
-            Entries.feed == feed,
-            Entries.date == date
+    for feed in feedloggr_Feeds.select().order_by(feedloggr_Feeds.title):
+        items = feedloggr_Entries.select().where(
+            feedloggr_Entries.feed == feed,
+            feedloggr_Entries.date == date
         )
         if items.count() > 0:
             news.append((feed, items))
@@ -42,23 +42,23 @@ def update_feeds():
     import feedparser
     today = datetime.date.today()
     try:
-        date = Dates.get(Dates.date == today)
+        date = feedloggr_Dates.get(feedloggr_Dates.date == today)
     except pdne:
-        date = Dates.create(date = today)
+        date = feedloggr_Dates.create(date = today)
     new_items = 0
-    for feed in Feeds.select():
+    for feed in feedloggr_Feeds.select():
         link = feed.link
         if not link.startswith('http://'):
             link = 'http://%s' % link
         data = feedparser.parse(link)
         max_items = current_app.config.get('FEEDLOGGR_MAX_ITEMS', 40)
         items = min(max_items, len(data.entries))
-        with Entries._meta.database.transaction():
+        with feedloggr_Entries._meta.database.transaction():
             # avoids comitting after each new item
             for i in xrange(items):
                 item = data.entries[i]
                 try:
-                    Entries.create(
+                    feedloggr_Entries.create(
                         title = item['title'] or item['link'],
                         link = item['link'],
                         date = date,

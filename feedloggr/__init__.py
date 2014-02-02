@@ -4,7 +4,7 @@ in your flask application."""
 
 from flask import Blueprint
 
-from .models import db_proxy, Feeds, FeedsAdmin
+from .models import db_proxy, feedloggr_Feeds, feedloggr_FeedsAdmin
 from .views import index
 from .utils import create_tables
 
@@ -30,7 +30,7 @@ class Feedloggr(object):
 
         db_proxy.initialize(db.database)
         create_tables(fail_silently=True)
-        admin.register(Feeds, FeedsAdmin)
+        admin.register(feedloggr_Feeds, feedloggr_FeedsAdmin)
 
         app.register_blueprint(
             blueprint,
