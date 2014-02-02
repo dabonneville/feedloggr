@@ -36,11 +36,12 @@ class FeedloggrTestCase(unittest.TestCase):
             title='entry_title', link='entry_link', date=date, feed=feed
         )
 
-    def test_database(self):
+    def test_database_was_populated(self):
         """Test if the database has been created."""
-        self.assertEqual(feedloggr_Dates._meta.db_table, 'dates')
-        self.assertEqual(feedloggr_Feeds._meta.db_table, 'feeds')
-        self.assertEqual(feedloggr_Entries._meta.db_table, 'entries')
+        self.populate_db()
+        self.assertEqual(feedloggr_Entries.select().count(), 1)
+        tmp = feedloggr_Entries.get(feedloggr_Entries.id == 1)
+        self.assertIsInstance(tmp, feedloggr_Entries)
 
     def test_update_database(self):
         """ Test if we can update the database with new items."""
