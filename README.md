@@ -83,18 +83,7 @@ app and override feedloggr's. Example:
 
 Example
 -------
-Inside of `example/` is a fully working example app. You can either run `python
-app.py`, quick 'n easy, or `python manager.py`, with some more functionality.
-`manager.py` is using flask-script, which enables some custom commands you can
-run from the terminal:
-
-    routes              List all routes for this app.
-    feeds               Show a list of all stored feeds.
-    shell               Runs a Python shell inside Flask application context.
-    update              Update all feeds stored in the database.
-    runserver           Runs the Flask development server i.e. app.run()
-
-Run `manager.py -h [command]` for more details.
+Inside of `example/` is a fully working example app.
 
 Contribution
 ------------
