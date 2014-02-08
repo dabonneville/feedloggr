@@ -1,0 +1,7 @@
+
+include *.md
+include LICENSE
+include AUTHORS
+recursive-include example *
+recursive-include tests *
+recursive-include feedloggr *
