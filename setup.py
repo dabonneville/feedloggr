@@ -14,9 +14,8 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
+        'feedparser',
         'flask',
-        'flask',
-        'flask-script',
         'flask-peewee',
     ],
     # List of classifiers:  https://pypi.python.org/pypi?%3Aaction=list_classifiers

@@ -9,5 +9,4 @@ THIRD PARTY CONTENT AND LIBRARIES:
 Feedparser (http://code.google.com/p/feedparser)
 Flask (http://flask.pocoo.org/)
 flask-peewee (http://flask-peewee.readthedocs.org)
-flask-script (http://flask-script.readthedocs.org)
 

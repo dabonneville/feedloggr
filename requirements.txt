@@ -1,4 +1,3 @@
 feedparser
 flask
-flask-script
 flask-peewee
