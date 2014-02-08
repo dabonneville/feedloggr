@@ -1,28 +1,28 @@
-Feedloggr
+feedloggr
 =========
 Collect news from your favorite RSS/Atom feeds and show them in your flask application.
 This is the bigger brother of [simple_feedlog](https://github.com/lmas/simple_feedlog).
 
-[![Build Status](https://travis-ci.org/lmas/Feedloggr.png?branch=master)](https://travis-ci.org/lmas/Feedloggr)
-[![Coverage Status](https://coveralls.io/repos/lmas/Feedloggr/badge.png)](https://coveralls.io/r/lmas/Feedloggr)
+[![Build Status](https://travis-ci.org/lmas/feedloggr.png?branch=master)](https://travis-ci.org/lmas/feedloggr)
+[![Coverage Status](https://coveralls.io/repos/lmas/feedloggr/badge.png)](https://coveralls.io/r/lmas/feedloggr)
 
 Installation
 ------------
 First things first!
-You're going to have to download the Feedloggr source to your local box somehow.
+You're going to have to download the feedloggr source to your local box somehow.
 The easiest thing at the moment is by cloning this git repo:
 
-    git clone https://github.com/lmas/Feedloggr.git
+    git clone https://github.com/lmas/feedloggr.git
 
-In order to run Feedloggr, it needs some libraries installed:
+In order to run feedloggr, it needs some libraries installed:
 
     pip install -r requirements.txt
 
-You can now run Feedloggr in your flask app!
+You can now run feedloggr in your flask app!
 
 Management
 ----------
-You can easily manage Feedloggr from the builtin web admin interface, from
+You can easily manage feedloggr from the builtin web admin interface, from
 flask-peewee, by visiting `http://your.domain.com/feedloggr/admin/` and logging
 in there.
 Before that, you have to setup a admin user with flask_peewee.auth:
@@ -43,7 +43,7 @@ Before that, you have to setup a admin user with flask_peewee.auth:
 
 You can then login to the admin interface and add new Rss/Atom feed URLs.
 
-Updating Feedloggr with more, up to date news is done by calling
+Updating feedloggr with more, up to date news is done by calling
 `feedloggr.utils.update_feeds()` within a [flask app context](http://flask.pocoo.org/docs/appcontext/).
 Example:
 
@@ -51,27 +51,27 @@ Example:
     from feedloggr.utils import update_feeds
     with flask_app.app_context():
         new_items = update_feeds()
-        print('Feedloggr was updated with %i new items.' % new_items)
+        print('feedloggr was updated with %i new items.' % new_items)
 
-Feedloggr will then run through each one of it's stored feeds' URLs and download
+feedloggr will then run through each one of it's stored feeds' URLs and download
 any new items and store them in the database.
 
 Configuration
 -------------
-Feedloggr has only a few, simple configuration variables it will try to use:
+feedloggr has only a few, simple configuration variables it will try to use:
 
     FEEDLOGGR_MAX_ITEMS = [int]
-    Tell Feedloggr how many items it should try to load from a feed when
+    Tell feedloggr how many items it should try to load from a feed when
     updating news.
 
     FEEDLOGGR_URL = [string]
-    Register Feedloggr at this url prefix (example: /feedloggr).
+    Register feedloggr at this url prefix (example: /feedloggr).
 
 Templates
 ---------
-By default, Feedloggr tries to load a base template `base.html` and add it's
+By default, feedloggr tries to load a base template `base.html` and add it's
 content to a `content` block. You can easily make your own base template in your
-app and override Feedloggr's. Example:
+app and override feedloggr's. Example:
 
     <!DOCTYPE html>
     <meta charset="UTF-8">

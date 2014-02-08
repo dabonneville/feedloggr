@@ -2,11 +2,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='Feedloggr',
+    name='feedloggr',
     version='0.3',
     description='Collect news from your favorite RSS/Atom feeds and show them in your flask application.',
     long_description=open('README.md').read(),
-    url='http://github.org/lmas/Feedloggr',
+    url='http://github.org/lmas/feedloggr',
     author='A. Svensson',
     author_email='lmasvensson at gmail dot com',
     license='MIT',
