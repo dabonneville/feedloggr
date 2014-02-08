@@ -13,7 +13,7 @@ class FeedloggrTestCase(unittest.TestCase):
     def setUp(self):
         self.app = Flask(__name__)
         self.app.config.update(
-            DEBUG=False,
+            DEBUG=True,
             TESTING=True,
             DATABASE={
                 'name': 'test.db',
