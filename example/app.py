@@ -47,8 +47,10 @@ def create_app(config={}):
 
 if __name__ == '__main__':
     from feedloggr import Feedloggr
+    from feedloggr.models import feedloggr_Feeds, feedloggr_FeedsAdmin
     app = create_app()
-    Feedloggr(app, app.db, app.admin)
+    Feedloggr(app, app.db)
+    app.admin.register(feedloggr_Feeds, feedloggr_FeedsAdmin)
     app.admin.setup()
     app.run(host='0.0.0.0', port=8000)
 
