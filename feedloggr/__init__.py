@@ -9,12 +9,16 @@ from .views import index
 from .utils import create_tables
 
 class Feedloggr(object):
-    def __init__(self, app, db=None, admin=None):
-        self.app = app
-        if app is not None:
-            self.init_app(app, db, admin)
+    def __init__(self, app=None, *args, **kwargs):
+        if app:
+            self.init_app(app, *args, **kwargs)
 
     def init_app(self, app, db, admin):
+        self.app = app
+        # register extension with app
+        self.app.extensions = getattr(app, 'extensions', {})
+        self.app.extensions['feedloggr'] = self
+
         blueprint = Blueprint(
             'feedloggr',
             __name__,
