@@ -19,15 +19,15 @@ class FeedloggrTestCase(unittest.TestCase):
                 'name': 'test.db',
                 'engine': 'peewee.SqliteDatabase',
             },
-            FEEDLOGGR_URL='/test',
         )
         self.app.db = Database(self.app)
 
-        Feedloggr(self.app, self.app.db)
-        self.client = self.app.test_client()
-
+        tmp = Feedloggr(self.app, self.app.db)
         drop_tables(fail_silently = True)
         create_tables(fail_silently = False)
+
+        self.url = tmp.blueprint.url_prefix
+        self.client = self.app.test_client()
 
     def populate_db(self):
         """Populate the database with some test data."""
@@ -56,20 +56,20 @@ class FeedloggrTestCase(unittest.TestCase):
     def test_index_view(self):
         """Test if the view contains items and URLs behave correctly."""
         # Test with an empty database
-        tmp = self.client.get('/test/').data
+        tmp = self.client.get(self.url, follow_redirects=True).data
         self.assertIn('Sorry, no links today!', tmp)
-        tmp = self.client.get('/test/1970-01-01').data
+        tmp = self.client.get('%s/1970-01-01' % self.url).data
         self.assertIn('Sorry, no links today!', tmp)
 
         # Test URLs
-        tmp = self.client.get('/test/1970-01-01').data
+        tmp = self.client.get('%s/1970-01-01' % self.url).data
         self.assertIn('1970-01-02', tmp)
-        tmp = self.client.get('/test/1970-01-0a').status_code
+        tmp = self.client.get('%s/1970-01-0a' % self.url).status_code
         self.assertEqual(404, tmp)
 
         # Test with populated database
         self.populate_db()
-        tmp = self.client.get('/test/').data
+        tmp = self.client.get(self.url, follow_redirects=True).data
         self.assertIn('feed_title', tmp)
         self.assertIn('entry_title', tmp)
 
