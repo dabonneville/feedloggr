@@ -19,15 +19,16 @@ class Feedloggr(object):
         self.app.extensions = getattr(app, 'extensions', {})
         self.app.extensions['feedloggr'] = self
 
-        blueprint = Blueprint(
+        self.blueprint = Blueprint(
             'feedloggr',
             __name__,
             template_folder='templates',
             static_folder='static',
+            url_prefix = app.config.get('FEEDLOGGR_URL', '/feedloggr'),
         )
 
-        blueprint.add_url_rule('/', view_func=index)
-        blueprint.add_url_rule(
+        self.blueprint.add_url_rule('/', view_func=index)
+        self.blueprint.add_url_rule(
             '/<int:year>-<int:month>-<int:day>',
             view_func=index,
         )
@@ -35,7 +36,4 @@ class Feedloggr(object):
         db_proxy.initialize(db.database)
         create_tables(fail_silently=True)
 
-        app.register_blueprint(
-            blueprint,
-            url_prefix = app.config.get('FEEDLOGGR_URL', '/feedloggr'),
-        )
+        app.register_blueprint(self.blueprint)
