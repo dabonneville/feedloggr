@@ -5,13 +5,11 @@ from flask_peewee.db import Database
 from flask_peewee.auth import Auth
 from flask_peewee.admin import Admin
 
-# Silence all but the most critical errors from peewee
-import logging
-logger = logging.getLogger('peewee')
-logger.setLevel(logging.CRITICAL)
+from feedloggr import Feedloggr
+from feedloggr.models import feedloggr_Feeds, feedloggr_FeedsAdmin
 
-def create_app(config={}):
-    app = Flask(__name__, instance_relative_config=True)
+def create_app():
+    app = Flask(__name__)
     app.config.update(
         DEBUG=True,
         SECRET_KEY='supersecret',
@@ -20,11 +18,14 @@ def create_app(config={}):
             'engine': 'peewee.SqliteDatabase',
         },
     )
-    app.config.update(config)
     app.db = Database(app)
+    Feedloggr(app, app.db)
 
+    # OPTIONALLY SETUP BEGINS
+    # Simple authentication for the admin interface
     app.auth = Auth(app, app.db)
     app.auth.User.create_table(fail_silently=True)
+    # Try to create a new admin user, but fail silently if it already exists
     try:
         user = app.auth.User.create(
             username='admin',
@@ -38,19 +39,19 @@ def create_app(config={}):
     else:
         user.set_password('admin')
         user.save()
+    # Initialize the admin interface
     app.admin = Admin(app, app.auth)
     app.auth.register_admin(app.admin)
+    # Register the feedloggr feeds model
+    app.admin.register(feedloggr_Feeds, feedloggr_FeedsAdmin)
+    app.admin.setup()
+    # OPTIONALLY SETUP ENDS
 
     return app
 
-######################################################################
+###############################################################################
 
 if __name__ == '__main__':
-    from feedloggr import Feedloggr
-    from feedloggr.models import feedloggr_Feeds, feedloggr_FeedsAdmin
     app = create_app()
-    Feedloggr(app, app.db)
-    app.admin.register(feedloggr_Feeds, feedloggr_FeedsAdmin)
-    app.admin.setup()
-    app.run(host='0.0.0.0', port=8000)
+    app.run()
 
