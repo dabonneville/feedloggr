@@ -7,7 +7,7 @@ install:
     - "pip install coverage"
     - "pip install coveralls"
 script:
-    coverage run --source=feedloggr tests.py
+    make test
 after_success:
     coveralls
 
