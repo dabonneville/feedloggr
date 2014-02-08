@@ -2,7 +2,8 @@
 import datetime
 import unittest
 
-from example.app import create_app
+from flask import Flask
+from flask_peewee.db import Database
 
 from feedloggr import Feedloggr
 from feedloggr.utils import drop_tables, create_tables, update_feeds
@@ -10,18 +11,19 @@ from feedloggr.models import feedloggr_Dates, feedloggr_Feeds, feedloggr_Entries
 
 class FeedloggrTestCase(unittest.TestCase):
     def setUp(self):
-        self.config = {
-            'DEBUG': False,
-            'TESTING': True,
-            'DATABASE': {
+        self.app = Flask(__name__)
+        self.app.config.update(
+            DEBUG=False,
+            TESTING=True,
+            DATABASE={
                 'name': 'test.db',
                 'engine': 'peewee.SqliteDatabase',
             },
-            'FEEDLOGGR_URL': '/test',
-        }
-        self.app = create_app(self.config)
-        Feedloggr(self.app, self.app.db, self.app.admin)
-        self.app.admin.setup()
+            FEEDLOGGR_URL='/test',
+        )
+        self.app.db = Database(self.app)
+
+        Feedloggr(self.app, self.app.db)
         self.client = self.app.test_client()
 
         drop_tables(fail_silently = True)
