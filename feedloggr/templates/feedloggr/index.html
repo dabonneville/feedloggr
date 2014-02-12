@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+<title>{% block title %}{{today}} | Feedloggr{% endblock %}</title>
+
 {% block content %}
 <header>
     <a href="{{ url_for(".index")}}{{next_day}}">&lt;&lt;</a>

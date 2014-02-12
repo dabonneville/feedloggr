@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="{{ url_for('.static', filename='style.css') }}">
-<title>{{today}} | Feedloggr</title>
+<title>{% block title %}-{% endblock %}</title>
 
 {% with flashes = get_flashed_messages() %}
     {% if flashes %}<ul>
